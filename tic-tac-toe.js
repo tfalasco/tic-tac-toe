@@ -110,3 +110,33 @@ jill.win();
 jill.win();
 console.log(`${ted.getMarker()} (${ted.getName()}): ${ted.getScore()}`);
 console.log(`${jill.getMarker()} (${jill.getName()}): ${jill.getScore()}`);
+
+// Play a random game to check board logic
+// Initialize some variables
+let gameResult = "in progress";
+let marker = "X";
+
+// Place alternating X and O markers at random tiles until the 
+// game is over
+while ("in progress" === gameResult) {
+
+    // Place the marker at a random place on the board.
+    let placedMarker = false;
+    while (placedMarker === false) {
+        placedMarker = gameBoard.placeMarker(Math.floor(Math.random() * 9), marker);
+    }
+
+    // Alternate X and O markers
+    if ("X" === marker) {
+        marker = "O";
+    }
+    else {
+        marker = "X";
+    }
+
+    // Check the game progress
+    gameResult = gameBoard.checkForGameOver();
+}
+gameBoard.printBoard();
+console.log(gameResult);
+
