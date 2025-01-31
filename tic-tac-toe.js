@@ -103,6 +103,10 @@ const gameBoard = (function() {
                 }
             });
             return returnValue;
+        },
+
+        clearBoard: function() {
+            tiles.fill(null);
         }
     }
 })();
