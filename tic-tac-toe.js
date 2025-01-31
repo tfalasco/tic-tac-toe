@@ -111,40 +111,75 @@ const gameBoard = (function() {
     }
 })();
 
+const gameController = (function(type) {
+    let player1;
+    let player2;
+    let gameResult = "in progress";
+
+    return {
+        // Initialize the game by creating two players
+        initialize: function() {
+            if ("test" === type) {                
+                player1 = createPlayer("ted", "X");
+                player2 = createPlayer("jill", "O");
+            }
+            else {
+                // TODO: Pull player names from UI elements
+                throw "gameController: only 'test' type is defined";
+            }
+        },
+
+        playRandomGame: function() {
+            let turn = player1;
+
+            // Place alternating player1 and 2 markers at random tiles until the 
+            // game is over
+            while ("in progress" === gameResult) {
+
+                // Place the marker at a random place on the board.
+                let placedMarker = false;
+                while (placedMarker === false) {
+                    placedMarker = gameBoard.placeMarker(Math.floor(Math.random() * 9), turn.getMarker());
+                }
+
+                // Alternate player 1 and 2
+                if (turn === player1) {
+                    turn = player2;
+                }
+                else {
+                    turn = player1
+                }
+
+                // Check the game progress
+                gameResult = gameBoard.checkForGameOver();
+            }
+            gameBoard.printBoard();
+            if (gameResult === player1.getMarker()) {
+                player1.win();
+                console.log(`${player1.getName()} wins!`)
+            }
+            else if (gameResult === player2.getMarker()) {
+                player2.win();
+                console.log(`${player1.getName()} wins!`)
+            }
+            else {
+                console.log("It's a tie!");
+            }
+            player1.printInfo();
+            player2.printInfo();
+        },
+
+        resetGame: function() {
+            gameResult = "in progress";
+            gameBoard.clearBoard();
+        }
+    }
+
+})("test");
+
 // Test code
-const ted = createPlayer("ted", "X");
-const jill = createPlayer("jill", "O");
-jill.win();
-jill.win();
-console.log(`${ted.getMarker()} (${ted.getName()}): ${ted.getScore()}`);
-console.log(`${jill.getMarker()} (${jill.getName()}): ${jill.getScore()}`);
-
-// Play a random game to check board logic
-// Initialize some variables
-let gameResult = "in progress";
-let marker = "X";
-
-// Place alternating X and O markers at random tiles until the 
-// game is over
-while ("in progress" === gameResult) {
-
-    // Place the marker at a random place on the board.
-    let placedMarker = false;
-    while (placedMarker === false) {
-        placedMarker = gameBoard.placeMarker(Math.floor(Math.random() * 9), marker);
-    }
-
-    // Alternate X and O markers
-    if ("X" === marker) {
-        marker = "O";
-    }
-    else {
-        marker = "X";
-    }
-
-    // Check the game progress
-    gameResult = gameBoard.checkForGameOver();
+gameController.initialize();
+for (let i = 0; i < 100; i++) {
+    gameController.playRandomGame();
+    gameController.resetGame();
 }
-gameBoard.printBoard();
-console.log(gameResult);
-
