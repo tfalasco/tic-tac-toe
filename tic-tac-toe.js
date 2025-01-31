@@ -7,12 +7,16 @@ function createPlayer(name, marker) {
     const getMarker = () => marker;
     const win = () => ++score;
     const getScore = () => score;
+    const printInfo = () => {
+        console.log(`${name} (${marker}) won ${score} games.`);
+    }
 
     return {
         getName,
         getMarker,
         win,
-        getScore
+        getScore,
+        printInfo,
     };
 }
 
