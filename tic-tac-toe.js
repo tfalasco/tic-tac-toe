@@ -74,6 +74,11 @@ const gameBoard = (function() {
             }
         },
 
+        updateTurn: function(turn) {
+            const turnIndicator = document.querySelector("#turn");
+            turnIndicator.innerText = turn.getMarker();
+        },
+
         checkForGameOver: function() {
             // First, check for a win.
             // Check the lines that cross the center tile
@@ -118,6 +123,7 @@ const gameController = (function(type) {
     let player1;
     let player2;
     let gameResult = "in progress";
+    let turn;
 
     return {
         // Initialize the game by creating two players
@@ -130,10 +136,29 @@ const gameController = (function(type) {
                 // TODO: Pull player names from UI elements
                 throw "gameController: only 'test' type is defined";
             }
+
+            // Initialize whose turn it is
+            turn = player1;
+
+            // Update the turn div to display whose turn it is
+            gameBoard.updateTurn(turn);
         },
 
         playRandomGame: function() {
-            let turn = player1;
+        turnOver: function() {
+            // Check if the game is over
+            gameBoard.updateResult(gameBoard.checkForGameOver());
+
+            // Alternate player 1 and 2
+            if (turn === player1) {
+                turn = player2;
+            }
+            else {
+                turn = player1
+            }
+            gameBoard.updateTurn(turn);
+            gameBoard.renderBoard();
+        },
 
             // Place alternating player1 and 2 markers at random tiles until the 
             // game is over
