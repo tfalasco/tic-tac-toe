@@ -1,3 +1,24 @@
 body {
     background-color: #999;
+    font-family: 'Courier New', Courier, monospace;
+    box-sizing: border-box;
+}
+
+/* Board styling */
+.board {
+    height: 300px;
+    width: 300px;
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px;
+    border-top: 2px solid #000;
+    border-left: 2px solid #000;
+}
+
+.cell {
+    background-color: #fff;
+    border-bottom: 2px solid #000;
+    border-right: 2px solid #000;
+    font-size: 90px;
+    text-align: center;
 }
