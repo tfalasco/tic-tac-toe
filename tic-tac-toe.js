@@ -172,7 +172,6 @@ const gameController = (function (type) {
             gameBoard.updateTurn(turn);
         },
 
-        playRandomGame: function() {
         turnOver: function() {
             // Check if the game is over
             gameBoard.updateResult(gameBoard.checkForGameOver());
@@ -188,6 +187,7 @@ const gameController = (function (type) {
             gameBoard.renderBoard();
         },
 
+        playRandomGame: function() {
             // Place alternating player1 and 2 markers at random tiles until the 
             // game is over
             while ("in progress" === gameResult) {
