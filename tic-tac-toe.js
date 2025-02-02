@@ -21,7 +21,25 @@ function createPlayer(name, marker) {
 }
 
 const gameBoard = (function() {
+    // Array to hold the value of tiles played (X or O)
     const tiles = new Array(9).fill(null);
+
+    // Register click event listeners for each cell in the UI board
+    const displayBoard = document.querySelector(".board");
+    const cells = displayBoard.children;
+    for (let i = 0; i < 9; i++) {
+        cells[i].addEventListener("click", function() {
+            // Get the marker to place in this cell
+            const turnIndicator = document.querySelector("#turn");
+
+            // Check if we can place the marker
+            if (placeMarker(i, turnIndicator.innerText)) {
+                // We successfully placed the marker.
+                // This turn is over, tell the game controller.
+                gameController.turnOver();
+            }
+        })
+    }
 
     // Returns the symbol that should be printed to the console
     function getSymbol(index) {
@@ -30,12 +48,6 @@ const gameBoard = (function() {
         }
         else if (tiles[index] === "O") {
             return "O";
-        }
-        // If the tile is not X or O, we want an underscore for
-        // the first two rows, but a blank space for the bottom
-        // row
-        else if (index < 6) {
-            return "_";
         }
         else {
             return " "
