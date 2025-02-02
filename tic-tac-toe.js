@@ -109,26 +109,26 @@ const gameBoard = (function() {
             tiles.fill(null);
         },
 
-        checkForGameOver: function() {
+        checkForGameOver: function () {
             // First, check for a win.
             // Check the lines that cross the center tile
             if ((tiles[4] !== null) &&
                 (allThreeTheSame(tiles[0], tiles[4], tiles[8]) ||
-                allThreeTheSame(tiles[1], tiles[4], tiles[7]) ||
-                allThreeTheSame(tiles[2], tiles[4], tiles[6]) ||
-                allThreeTheSame(tiles[3], tiles[4], tiles[5]))) {
+                    allThreeTheSame(tiles[1], tiles[4], tiles[7]) ||
+                    allThreeTheSame(tiles[2], tiles[4], tiles[6]) ||
+                    allThreeTheSame(tiles[3], tiles[4], tiles[5]))) {
                 return tiles[4];
-            } 
+            }
             // Check the non-diagonal lines from top left
             if ((tiles[0] !== null) &&
                 (allThreeTheSame(tiles[0], tiles[1], tiles[2]) ||
-                allThreeTheSame(tiles[0], tiles[3], tiles[6]))) {
+                    allThreeTheSame(tiles[0], tiles[3], tiles[6]))) {
                 return tiles[0];
-            } 
+            }
             // Check the non-diagonals from bottom right
             if ((tiles[8] !== null) &&
                 (allThreeTheSame(tiles[2], tiles[5], tiles[8]) ||
-                allThreeTheSame(tiles[6], tiles[7], tiles[8]))) {
+                    allThreeTheSame(tiles[6], tiles[7], tiles[8]))) {
                 return tiles[8];
             }
             // Next, check for a tie.  If we haven't returned a 
@@ -147,7 +147,7 @@ const gameBoard = (function() {
     }
 })();
 
-const gameController = (function(type) {
+const gameController = (function (type) {
     let player1;
     let player2;
     let gameResult = "in progress";
@@ -155,8 +155,8 @@ const gameController = (function(type) {
 
     return {
         // Initialize the game by creating two players
-        initialize: function() {
-            if ("test" === type) {                
+        initialize: function () {
+            if ("test" === type) {
                 player1 = createPlayer("ted", "X");
                 player2 = createPlayer("jill", "O");
             }
@@ -208,11 +208,15 @@ const gameController = (function(type) {
 
                 // Check the game progress
                 gameResult = gameBoard.checkForGameOver();
+
                 // Update the UI
                 gameBoard.renderBoard();
                 gameBoard.updateTurn(turn);
             }
+
+            // Print the board
             gameBoard.printBoard();
+
             // Update the scores and print out the result
             if (gameResult === player1.getMarker()) {
                 player1.win();
@@ -237,7 +241,7 @@ const gameController = (function(type) {
             }
         },
 
-        resetGame: function() {
+        resetGame: function () {
             gameResult = "in progress";
             gameBoard.clearBoard();
         }
