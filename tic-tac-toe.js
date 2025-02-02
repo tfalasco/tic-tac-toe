@@ -63,6 +63,11 @@ const gameBoard = (function() {
         }
     }
 
+    function updateResult(result) {
+        const resultIndicator = document.querySelector("#result");
+        resultIndicator.innerText = result;
+    }
+
     return {
         // Print a visual representation of the board to the console
         printBoard: function() {
@@ -71,12 +76,25 @@ const gameBoard = (function() {
             }
         },
 
+        renderBoard: function () {
+            const displayBoard = document.querySelector(".board");
+            const cells = displayBoard.children;
+            for (let i = 0; i < 9; i++) {
+                cells[i].innerText = gameBoard.getSymbol(i);
             }
         },
 
         updateTurn: function(turn) {
             const turnIndicator = document.querySelector("#turn");
             turnIndicator.innerText = turn.getMarker();
+        },
+
+        updateResult,
+
+        placeMarker,
+
+        clearBoard: function () {
+            tiles.fill(null);
         },
 
         checkForGameOver: function() {
