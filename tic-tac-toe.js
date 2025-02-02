@@ -208,21 +208,33 @@ const gameController = (function(type) {
 
                 // Check the game progress
                 gameResult = gameBoard.checkForGameOver();
+                // Update the UI
+                gameBoard.renderBoard();
+                gameBoard.updateTurn(turn);
             }
             gameBoard.printBoard();
+            // Update the scores and print out the result
             if (gameResult === player1.getMarker()) {
                 player1.win();
-                console.log(`${player1.getName()} wins!`)
+                if ("test" === type) {
+                    console.log(`${player1.getName()} wins!`);
+                }
             }
             else if (gameResult === player2.getMarker()) {
                 player2.win();
-                console.log(`${player1.getName()} wins!`)
+                if ("test" === type) {
+                    console.log(`${player1.getName()} wins!`);
+                }
             }
             else {
-                console.log("It's a tie!");
+                if ("test" === type) {
+                    console.log("It's a tie!");
+                }
             }
-            player1.printInfo();
-            player2.printInfo();
+            if ("test" === type) {
+                player1.printInfo();
+                player2.printInfo();
+            }
         },
 
         resetGame: function() {
