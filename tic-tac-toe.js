@@ -47,6 +47,22 @@ const gameBoard = (function() {
         return ((a === b) && (a === c));
     }
 
+    function placeMarker(index, marker) {
+        // Ensure the index is in-bounds
+        if ((index < 0) || (index > 8)) {
+            return false;
+        }
+        // Verify the tile is not already taken
+        else if (tiles[index] !== null) {
+            return false;
+        }
+        // Otherwise, place the marker
+        else {
+            tiles[index] = marker;
+            return true;
+        }
+    }
+
     return {
         // Print a visual representation of the board to the console
         printBoard: function() {
@@ -55,19 +71,6 @@ const gameBoard = (function() {
             }
         },
 
-        placeMarker: function(index, marker) {
-            // Ensure the index is in-bounds
-            if ((index < 0) || (index > 8)) {
-                return false;
-            }
-            // Verify the tile is not already taken
-            else if (tiles[index] !== null) {
-                return false;
-            }
-            // Otherwise, place the marker
-            else {
-                tiles[index] = marker;
-                return true;
             }
         },
 
