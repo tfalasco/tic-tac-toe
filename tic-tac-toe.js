@@ -249,9 +249,7 @@ const gameController = (function (type) {
 
 })("test");
 
-// Test code
 gameController.initialize();
-for (let i = 0; i < 100; i++) {
-    gameController.playRandomGame();
-    gameController.resetGame();
-}
+
+// Test Code
+// gameController.playRandomGame();
