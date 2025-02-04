@@ -24,23 +24,6 @@ const gameBoard = (function() {
     // Array to hold the value of tiles played (X or O)
     const tiles = new Array(9).fill(null);
 
-    // Register click event listeners for each cell in the UI board
-    const displayBoard = document.querySelector(".board");
-    const cells = displayBoard.children;
-    for (let i = 0; i < 9; i++) {
-        cells[i].addEventListener("click", function() {
-            // Get the marker to place in this cell
-            const turnIndicator = document.querySelector("#turn");
-
-            // Check if we can place the marker
-            if (placeMarker(i, turnIndicator.innerText)) {
-                // We successfully placed the marker.
-                // This turn is over, tell the game controller.
-                gameController.turnOver();
-            }
-        })
-    }
-
     // Returns the symbol that should be printed to the console
     function getSymbol(index) {
         if (tiles[index] === "X") {
@@ -59,7 +42,7 @@ const gameBoard = (function() {
         return ((a === b) && (a === c));
     }
 
-    function placeMarker(index, marker) {
+    function placeMarker(index, markerSymbol) {
         // Ensure the index is in-bounds
         if ((index < 0) || (index > 8)) {
             return false;
@@ -70,14 +53,9 @@ const gameBoard = (function() {
         }
         // Otherwise, place the marker
         else {
-            tiles[index] = marker;
+            tiles[index] = markerSymbol;
             return true;
         }
-    }
-
-    function updateResult(result) {
-        const resultIndicator = document.querySelector("#result");
-        resultIndicator.innerText = result;
     }
 
     return {
@@ -87,21 +65,6 @@ const gameBoard = (function() {
                 console.log(`${getSymbol((row * 3) + 0)}|${getSymbol((row * 3) + 1)}|${getSymbol((row * 3) + 2)}`);
             }
         },
-
-        renderBoard: function () {
-            const displayBoard = document.querySelector(".board");
-            const cells = displayBoard.children;
-            for (let i = 0; i < 9; i++) {
-                cells[i].innerText = gameBoard.getSymbol(i);
-            }
-        },
-
-        updateTurn: function(turn) {
-            const turnIndicator = document.querySelector("#turn");
-            turnIndicator.innerText = turn.getMarker();
-        },
-
-        updateResult,
 
         placeMarker,
 
@@ -147,6 +110,88 @@ const gameBoard = (function() {
     }
 })();
 
+const uiController = (function() {
+    // Register click event listeners for each cell in the UI board
+    const displayBoard = document.querySelector(".board");
+    const cells = displayBoard.children;
+    for (let i = 0; i < 9; i++) {
+        cells[i].addEventListener("click", function() {
+            // Get the marker to place in this cell
+            const marker = gameController.getTurn().getMarker();
+
+            // Check if we can place the marker
+            if ((gameBoard.checkForGameOver() === "in progress") && 
+                (gameBoard.placeMarker(i, marker))) {
+                // We successfully placed the marker.
+                // This turn is over, tell the game controller.
+                gameController.turnOver();
+            }
+        })
+    }
+
+    function symbolToImageSource(symbol) {
+        switch (symbol) {
+            case "X":
+                return "images/x.png";
+            case "O":
+                return "images/o.png";
+            default:
+                // Return null if invalid symbol
+                return null;
+        }
+    }
+
+    function renderBoard() {
+        const displayBoard = document.querySelector(".board");
+        const cells = displayBoard.children;
+        for (let i = 0; i < 9; i++) {
+            // If this cell already has an image in it, skip it.
+            if (!cells[i].hasChildNodes()) {
+                // Get the image source based on the symbol
+                const source = symbolToImageSource(gameBoard.getSymbol(i));
+
+                // If we got a valid image source, create an img element and
+                // add the image to the cell.
+                if (source !== null) {
+                    const img = document.createElement("img");
+                    img.src = source;
+                    cells[i].appendChild(img);
+                }
+            }
+        }
+    }
+
+    function updateTurnIndicator(turn) {
+        const turnIndicator = document.querySelector("#turn");
+
+        // Remove any current child nodes
+        turnIndicator.innerHTML = "";
+
+        // Get the image source based on the marker
+        const source = symbolToImageSource(turn.getMarker());
+
+        // If we got a valid image source, create an img element and
+        // add the image to the cell.
+        if (source !== null) {
+            const img = document.createElement("img");
+            img.src = source;
+            turnIndicator.appendChild(img);
+        }
+    }
+
+    function updateResult(result) {
+        const resultIndicator = document.querySelector("#result");
+        resultIndicator.innerText = result;
+    }
+
+    return {
+        renderBoard,
+        updateTurnIndicator,
+        updateResult,
+    }
+
+})();
+
 const gameController = (function (type) {
     let player1;
     let player2;
@@ -169,12 +214,13 @@ const gameController = (function (type) {
             turn = player1;
 
             // Update the turn div to display whose turn it is
-            gameBoard.updateTurn(turn);
+            uiController.updateTurnIndicator(turn);
         },
 
         turnOver: function() {
             // Check if the game is over
-            gameBoard.updateResult(gameBoard.checkForGameOver());
+            let result = gameBoard.checkForGameOver();
+            uiController.updateResult(result);
 
             // Alternate player 1 and 2
             if (turn === player1) {
@@ -183,8 +229,8 @@ const gameController = (function (type) {
             else {
                 turn = player1
             }
-            gameBoard.updateTurn(turn);
-            gameBoard.renderBoard();
+            uiController.updateTurnIndicator(turn);
+            uiController.renderBoard();
         },
 
         playRandomGame: function() {
@@ -210,8 +256,8 @@ const gameController = (function (type) {
                 gameResult = gameBoard.checkForGameOver();
 
                 // Update the UI
-                gameBoard.renderBoard();
-                gameBoard.updateTurn(turn);
+                uiController.renderBoard();
+                uiController.updateTurnIndicator(turn);
             }
 
             // Print the board
@@ -244,6 +290,10 @@ const gameController = (function (type) {
         resetGame: function () {
             gameResult = "in progress";
             gameBoard.clearBoard();
+        },
+
+        getTurn: function() {
+            return turn;
         }
     }
 
