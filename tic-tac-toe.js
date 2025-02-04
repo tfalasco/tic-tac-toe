@@ -167,9 +167,6 @@ const uiController = (function() {
     function updateTurnIndicator(turn) {
         const turnIndicator = document.querySelector("#turn");
 
-        // Remove any current child nodes
-        turnIndicator.innerHTML = "";
-
         // Get the image source based on the marker
         const source = markerToImageSource(turn.getMarker());
 
@@ -178,6 +175,11 @@ const uiController = (function() {
         if (source !== null) {
             const img = document.createElement("img");
             img.src = source;
+
+            // Remove any current child nodes first
+            turnIndicator.innerHTML = "";
+
+            // Then add the child
             turnIndicator.appendChild(img);
         }
     }
