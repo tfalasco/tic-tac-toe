@@ -25,7 +25,7 @@ const gameBoard = (function() {
     const board = new Array(9).fill(null);
 
     // Returns the symbol that should be printed to the console
-    function getSymbol(index) {
+    function getMarker(index) {
         if (board[index] === "X") {
             return "X";
         }
@@ -61,7 +61,7 @@ const gameBoard = (function() {
     // Print a visual representation of the board to the console for debugging
     function printBoard() {
         for (let row = 0; row < 3; row++) {
-            console.log(`${getSymbol((row * 3) + 0)}|${getSymbol((row * 3) + 1)}|${getSymbol((row * 3) + 2)}`);
+            console.log(`${getMarker((row * 3) + 0)}|${getMarker((row * 3) + 1)}|${getMarker((row * 3) + 2)}`);
         }
     }
 
@@ -109,7 +109,7 @@ const gameBoard = (function() {
         placeMarker,
         clearBoard,
         checkForGameOver,
-        getMarker: getSymbol,
+        getMarker,
     }
 })();
 
