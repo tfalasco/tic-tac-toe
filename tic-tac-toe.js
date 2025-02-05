@@ -42,13 +42,17 @@ const gameBoard = (function() {
         return ((a === b) && (a === c));
     }
 
+    function canPlaceMarker(index) {
+        return (board[index] === null);
+    }
+
     function placeMarker(index, markerSymbol) {
         // Ensure the index is in-bounds
         if ((index < 0) || (index > 8)) {
             return false;
         }
         // Verify the tile is not already taken
-        else if (board[index] !== null) {
+        else if (!canPlaceMarker(index)) {
             return false;
         }
         // Otherwise, place the marker
@@ -110,14 +114,16 @@ const gameBoard = (function() {
         clearBoard,
         checkForGameOver,
         getMarker,
+        canPlaceMarker,
     }
 })();
 
 const uiController = (function() {
-    // Register click event listeners for each cell in the UI board
+    // Register event listeners for each cell in the UI board
     const displayBoard = document.querySelector(".board");
     const cells = displayBoard.children;
     for (let i = 0; i < 9; i++) {
+        // Click event to place a marker
         cells[i].addEventListener("click", function() {
             // Get the marker to place in this cell
             const marker = gameController.getTurn().getMarker();
@@ -128,7 +134,25 @@ const uiController = (function() {
                 // We successfully placed the marker.
                 // This turn is over, tell the game controller.
                 gameController.turnOver();
+                
+                // Set background to indicate this cell is no longer
+                // available
+                cells[i].style.backgroundColor = "rgba(0, 0, 0, 0.05)";
+
             }
+        })
+
+        // Mouseenter event to change cell background if this is a valid
+        // cell to place a marker into
+        cells[i].addEventListener("mouseenter", function() {
+            if (gameBoard.canPlaceMarker(i)) {
+                cells[i].style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            }
+        })
+
+        // Mouseleave event to revert to original background
+        cells[i].addEventListener("mouseleave", function() {
+            cells[i].style.backgroundColor = "rgba(0, 0, 0, 0.05)";
         })
     }
 
