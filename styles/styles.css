@@ -1,13 +1,34 @@
 body {
-    background-color: #999;
+    background-color: #ccc;     
     font-family: 'Courier New', Courier, monospace;
     box-sizing: border-box;
+    display: grid;
+    justify-content: center;
+}
+
+/* Main layout styling */
+.main-layout {
+    display: grid;
+    grid-template: 100px 100px 300px 150px / 200px 300px 200px;
+    grid-template-areas: 
+    "title title title"
+    "turn turn turn"
+    "player1 board player2"
+    "result result result";
+    gap: 5px;
+}
+
+#title {
+    font-size: 48px;
+    grid-area: title;
+    text-align: center;
 }
 
 /* Board styling */
 .board {
     height: 300px;
     width: 300px;
+    grid-area: board;
     display: grid;
     grid-template-columns: 100px 100px 100px;
     grid-template-rows: 100px 100px 100px;
@@ -24,4 +45,14 @@ body {
 #turn {
     height: 100px;
     width: 100px;
+    background-color: transparent;
+    grid-area: turn;
+    align-self: center;
+    justify-self: center;
+}
+
+#result {
+    grid-area: result;
+    text-align: center;
+    align-self: center;
 }
