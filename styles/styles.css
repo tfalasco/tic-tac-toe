@@ -18,10 +18,29 @@ body {
     gap: 5px;
 }
 
+/* Title bar styling */
 #title {
     font-size: 48px;
     grid-area: title;
     text-align: center;
+}
+
+/* Turn indicator styling */
+#turn {
+    height: 100px;
+    width: 100px;
+    background-color: transparent;
+    grid-area: turn;
+    align-self: center;
+    justify-self: center;
+}
+
+/* Player styling */
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Board styling */
@@ -42,15 +61,7 @@ body {
     text-align: center;
 }
 
-#turn {
-    height: 100px;
-    width: 100px;
-    background-color: transparent;
-    grid-area: turn;
-    align-self: center;
-    justify-self: center;
-}
-
+/* Game result styling */
 #result {
     grid-area: result;
     text-align: center;

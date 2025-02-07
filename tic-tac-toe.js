@@ -156,6 +156,36 @@ const uiController = (function() {
         })
     }
 
+    // Register event listeners for game-over dialog buttons
+    const gameOverDialog = document.querySelector("#game-over");
+    const playAgainBtn = document.querySelector("#play-again");
+    playAgainBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        uiController.clearBoard();
+        gameOverDialog.close("confirm");
+    });
+    const startOverBtn = document.querySelector("#start-over");
+    startOverBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        gameController.initialize();
+        uiController.clearBoard();
+        gameOverDialog.close("confirm");
+    });
+
+    function clearBoard() {
+        // Clear the underlying game board
+        gameBoard.clearBoard();
+
+        // Clear out images on displayed board
+        const displayBoard = document.querySelector(".board");
+        const cells = displayBoard.children;
+        for (let i = 0; i < 9; i++) {
+            // Delete contents of cell
+            cells[i].innerHTML = "";
+        }
+
+    }
+
     function markerToImageSource(marker) {
         switch (marker) {
             case "X":
@@ -213,10 +243,27 @@ const uiController = (function() {
         resultIndicator.innerText = result;
     }
 
+    function updatePlayerInfo(player1, player2) {
+        const p1Name = document.querySelector("#player1 .name");
+        const p1Score = document.querySelector("#player1 .score");
+        const p2Name = document.querySelector("#player2 .name");
+        const p2Score = document.querySelector("#player2 .score");
+
+        // Update names
+        p1Name.innerText = player1.getName();
+        p2Name.innerText = player2.getName();
+
+        // Update scores
+        p1Score.innerText = player1.getScore();
+        p2Score.innerText = player2.getScore();
+    }
+
     return {
+        clearBoard,
         renderBoard,
         updateTurnIndicator,
         updateResult,
+        updatePlayerInfo,
     }
 
 })();
@@ -238,6 +285,9 @@ const gameController = (function (type) {
             throw "gameController: only 'test' type is defined";
         }
 
+        // Populate the player info
+        uiController.updatePlayerInfo(player1, player2);
+
         // Initialize whose turn it is
         turn = player1;
 
@@ -246,24 +296,49 @@ const gameController = (function (type) {
     }
 
     function turnOver() {
+        // Update the board
+        uiController.renderBoard();
+
         // Check if the game is over
         let result = gameBoard.checkForGameOver();
         uiController.updateResult(result);
 
-        // Alternate player 1 and 2
-        if (turn === player1) {
-            turn = player2;
+        if ("in progress" === result) {
+            // The game is not over yet
+            // Alternate player 1 and 2
+            if (turn === player1) {
+                turn = player2;
+            }
+            else {
+                turn = player1
+            }
+            uiController.updateTurnIndicator(turn);
         }
         else {
-            turn = player1
+            // The game is over
+            if ("X" === result)  {
+                // Player 1 won
+                player1.win();
+            }
+            else if ("O" === result) {
+                // Player 2 won
+                player2.win();
+            }
+
+            // Update player info
+            uiController.updatePlayerInfo(player1, player2);
+
+            // Show the game over dialog
+            const gameOverDialog = document.querySelector("#game-over");
+            gameOverDialog.showModal();
         }
-        uiController.updateTurnIndicator(turn);
-        uiController.renderBoard();
     }
 
     function resetGame() {
         gameResult = "in progress";
         gameBoard.clearBoard();
+        turn = player1;
+        uiController.updateTurnIndicator(turn);
     }
     
     function getTurn() {
@@ -279,4 +354,5 @@ const gameController = (function (type) {
 
 })("test");
 
+// Main Code Entry Point
 gameController.initialize();
