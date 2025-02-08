@@ -219,7 +219,7 @@ const uiController = (function() {
     }
 
     function updateTurnIndicator(turn) {
-        const turnIndicator = document.querySelector("#turn");
+        const turnIndicator = document.querySelector("#turn-img");
 
         // Get the image source based on the marker
         const source = markerToImageSource(turn.getMarker());
@@ -240,7 +240,18 @@ const uiController = (function() {
 
     function updateResult(result) {
         const resultIndicator = document.querySelector("#result");
-        resultIndicator.innerText = result;
+        switch (result) {
+            case "X":   // Intentional fall-through
+            case "O":
+                resultIndicator.innerText = `${gameController.getTurn().getName()} wins!`;
+                break;
+            case "tie":
+                resultIndicator.innerText = "It's a tie!";
+                break;
+            default:
+                resultIndicator.innerText = "";
+                break;
+        }
     }
 
     function updatePlayerInfo(player1, player2) {

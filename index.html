@@ -10,7 +10,10 @@
 <body>
     <div class="main-layout">
         <p id="title">Tic-Tac-Toe</p>
-        <div id="turn" class="cell"></div>
+        <div id="turn" class="cell">
+            <div id="turn-text">Turn:</div>
+            <div id="turn-img"></div>
+        </div>
         <div class="board">
             <div id="cell0" class="cell"></div>
             <div id="cell1" class="cell"></div>
@@ -23,18 +26,22 @@
             <div id="cell8" class="cell"></div>
         </div>
         <div id="player1" class="player">
-            <div class="marker"></div>
+            <div class="marker">
+                <img src="images/x.png" alt="X">
+            </div>
             <div class="name"></div>
             <div class="score"></div>
         </div>
         <div id="player2" class="player">
-            <div class="marker"></div>
+            <div class="marker">
+                <img src="images/o.png" alt="O">
+            </div>
             <div class="name"></div>
             <div class="score"></div>
         </div>
     </div>
 
-    <dialog id="game-over">
+    <dialog id="game-over" class="modal">
         <form>
             <div id="result"></div>
             <button type="submit" id="play-again">Play again</button>
