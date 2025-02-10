@@ -4,6 +4,7 @@ function createPlayer(name, marker) {
 
     // Public functions
     const getName = () => name;
+    const setName = (newName) => name = newName;
     const getMarker = () => marker;
     const win = () => ++score;
     const getScore = () => score;
@@ -13,6 +14,7 @@ function createPlayer(name, marker) {
 
     return {
         getName,
+        setName,
         getMarker,
         win,
         getScore,
@@ -172,6 +174,67 @@ const uiController = (function() {
         gameOverDialog.close("confirm");
     });
 
+    // Register event listeners for player edit buttons
+    const editButtons = document.querySelectorAll(".edit-button");
+    editButtons.forEach((editButton) => {
+        editButton.addEventListener("click", () => {
+            // We are going to pass the edit button's parent element
+            // to the modal form as data so we know which player to
+            // edit when the form is closed.
+            const parent = editButton.parentElement;
+            const editDialog = document.querySelector("#configure-player");
+            editDialog.dataset.player = parent.id;
+
+            // Set the image source based on which player is being edited
+            const markerImage = document.querySelector("#config-player-marker");
+            const player = gameController.playerStringToPlayerObj(parent.id);
+            markerImage.innerHTML = `<img src="${markerToImageSource(player.getMarker())}">`;
+
+            // Pre-set the text input value to the current player's name
+            const nameEdit = document.querySelector("#player-name");
+            nameEdit.value = player.getName();
+
+            // Show the modal dialog
+            editDialog.showModal();
+        })
+    });
+
+    // Register event listeners to close the edit dialog
+    const editDialog = document.querySelector("#configure-player");
+    const submitEditButton = document.querySelector("#submit-edit");
+    const cancelEditButton = document.querySelector("#cancel-edit");
+    submitEditButton.addEventListener("click", (event) => {
+        // Prevent the default submit action
+        event.preventDefault();
+        // close the form and confirm changes
+        editDialog.close("confirm");
+    });
+
+    cancelEditButton.addEventListener("click", (event) => {
+        // Prevent the default submit action
+        event.preventDefault();
+        // Close the form without making changes
+        editDialog.close("cancel");
+    });
+
+    editDialog.addEventListener("close", () => {
+        if ("confirm" === editDialog.returnValue) {
+            // Update the player's name with the value of the text input if the dialog was
+            // not cancelled
+            const nameEdit = document.querySelector("#player-name");
+            const player = gameController.playerStringToPlayerObj(editDialog.dataset.player);
+            player.setName(nameEdit.value);
+            gameController.refreshPlayers();
+        }
+    })
+
+    editDialog.addEventListener("keydown", (e) => {
+        // Cancel the form if the user presses escape
+        if (e.key === "Escape") {
+            editDialog.close("cancel");
+        }
+    })
+
     function clearBoard() {
         // Clear the underlying game board
         gameBoard.clearBoard();
@@ -279,7 +342,7 @@ const uiController = (function() {
 
 })();
 
-const gameController = (function (type) {
+const gameController = (() => {
     let player1;
     let player2;
     let gameResult = "in progress";
@@ -287,14 +350,8 @@ const gameController = (function (type) {
 
     // Initialize the game by creating two players
     function initialize() {
-        if ("test" === type) {
-            player1 = createPlayer("ted", "X");
-            player2 = createPlayer("jill", "O");
-        }
-        else {
-            // TODO: Pull player names from UI elements
-            throw "gameController: only 'test' type is defined";
-        }
+            player1 = createPlayer("Player 1", "X");
+            player2 = createPlayer("Player 2", "O");
 
         // Populate the player info
         uiController.updatePlayerInfo(player1, player2);
@@ -356,14 +413,32 @@ const gameController = (function (type) {
         return turn;
     }
 
+    function playerStringToPlayerObj(playerString) {
+        if ("player1" === playerString) {
+            return player1;
+        }
+        else if ("player2" === playerString) {
+            return player2;
+        }
+        else {
+            return null;
+        }
+    }
+
+    function refreshPlayers() {
+        uiController.updatePlayerInfo(player1, player2);
+    }
+
     return {
         initialize,
         turnOver,
         resetGame,
         getTurn,
+        playerStringToPlayerObj,
+        refreshPlayers,
     }
 
-})("test");
+})();
 
 // Main Code Entry Point
 gameController.initialize();

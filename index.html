@@ -31,6 +31,7 @@
             </div>
             <div class="name"></div>
             <div class="score"></div>
+            <button type="button" class="edit-button">Edit</button>
         </div>
         <div id="player2" class="player">
             <div class="marker">
@@ -38,14 +39,29 @@
             </div>
             <div class="name"></div>
             <div class="score"></div>
+            <button type="button" class="edit-button">Edit</button>
         </div>
     </div>
 
-    <dialog id="game-over" class="modal">
+    <dialog id="game-over">
         <form>
             <div id="result"></div>
             <button type="submit" id="play-again">Play again</button>
             <button type="submit" id="start-over">Start over</button>
+        </form>
+    </dialog>
+
+    <dialog id="configure-player" data-player="">
+        <form>
+            <div class="player">
+                <div id="config-player-marker" class="marker">
+                    <img>
+                </div>
+                <input type="text" id="player-name" minlength="1" maxlength="14">
+                <div>
+                    <button type="cancel" id="cancel-edit">Cancel</button>
+                    <button type="submit" id="submit-edit">Okay</button>
+                </div>
         </form>
     </dialog>
 </body>
