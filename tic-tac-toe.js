@@ -164,6 +164,7 @@ const uiController = (function() {
     playAgainBtn.addEventListener("click", (event) => {
         event.preventDefault();
         uiController.clearBoard();
+        gameController.resetTurn();
         gameOverDialog.close("confirm");
     });
     const startOverBtn = document.querySelector("#start-over");
@@ -363,6 +364,11 @@ const gameController = (() => {
         uiController.updateTurnIndicator(turn);
     }
 
+    function resetTurn() {
+        turn = player1;
+        uiController.updateTurnIndicator(turn);
+    }
+
     function turnOver() {
         // Update the board
         uiController.renderBoard();
@@ -431,6 +437,7 @@ const gameController = (() => {
 
     return {
         initialize,
+        resetTurn,
         turnOver,
         resetGame,
         getTurn,
