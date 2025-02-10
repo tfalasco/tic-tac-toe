@@ -234,6 +234,12 @@ const uiController = (function() {
         if (e.key === "Escape") {
             editDialog.close("cancel");
         }
+
+        // Submit the form if the user presses enter
+        if (e.key === "Enter" || e.keyCode === 13) {
+            e.preventDefault();
+            editDialog.close("confirm");
+        }
     })
 
     function clearBoard() {
