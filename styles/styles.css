@@ -124,6 +124,10 @@ button:active {
     background-color: #ccc;
 }
 
+button:hover {
+    background-color: #ccc;
+}
+
 .edit-button{
     width: 80px;  
 }
