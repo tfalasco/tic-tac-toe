@@ -45,20 +45,24 @@
 
     <dialog id="game-over">
         <form>
-            <div id="result"></div>
-            <button type="submit" id="play-again">Play again</button>
-            <button type="submit" id="start-over">Start over</button>
+            <div class="form-layout">
+                <div id="result"></div>
+                <div class="button-row">
+                    <button type="submit" id="play-again">Play again</button>
+                    <button type="submit" id="start-over">Start over</button>
+                </div>
+            </div>
         </form>
     </dialog>
 
     <dialog id="configure-player" data-player="">
         <form>
-            <div class="player">
+            <div class="form-layout">
                 <div id="config-player-marker" class="marker">
                     <img>
                 </div>
                 <input type="text" id="player-name" minlength="1" maxlength="14">
-                <div>
+                <div class="button-row">
                     <button type="cancel" id="cancel-edit">Cancel</button>
                     <button type="submit" id="submit-edit">Okay</button>
                 </div>
