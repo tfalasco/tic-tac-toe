@@ -1,3 +1,6 @@
+// The createPlayer factory function creates a player and exposes
+// functions to edit the name, update the score, and get the player's
+// current score.
 function createPlayer(name, marker) {
     // Private variables
     let score = 0;
@@ -22,6 +25,9 @@ function createPlayer(name, marker) {
     };
 }
 
+// The gameBoard tracks the current state of of the board and
+// handles board-related tasks, such as placing a marker at an
+// index, clearing the board, and checking for wins
 const gameBoard = (function() {
     // Array to hold the value of markers played (X or O)
     const board = new Array(9).fill(null);
@@ -44,16 +50,18 @@ const gameBoard = (function() {
         return ((a === b) && (a === c));
     }
 
+    // Check if a marker can be placed at the given board index
     function canPlaceMarker(index) {
         return (board[index] === null);
     }
 
+    // Insert a marker onto the board
     function placeMarker(index, markerSymbol) {
         // Ensure the index is in-bounds
         if ((index < 0) || (index > 8)) {
             return false;
         }
-        // Verify the tile is not already taken
+        // Verify the board index is not already taken
         else if (!canPlaceMarker(index)) {
             return false;
         }
@@ -76,9 +84,15 @@ const gameBoard = (function() {
         board.fill(null);
     }
 
+    // Check if the game is in progress or is over.
+    // Will return
+    //      "X" - if player 1 (X) won
+    //      "O" - if player 2 (O) won
+    //      "tie" - if the board is full and no one won yet
+    //      "in progress" - if the board is not full and no one won yet
     function checkForGameOver() {
         // First, check for a win.
-        // Check the lines that cross the center tile
+        // Check the lines that cross the center square
         if ((board[4] !== null) &&
             (allThreeTheSame(board[0], board[4], board[8]) ||
                 allThreeTheSame(board[1], board[4], board[7]) ||
@@ -99,11 +113,11 @@ const gameBoard = (function() {
             return board[8];
         }
         // Next, check for a tie.  If we haven't returned a 
-        // winner yet and there are still undefined tiles,
+        // winner yet and there are still undefined board indexes,
         // the game is in progress.  Otherwise it is a tie.
         let returnValue = "tie";
-        board.forEach((tile) => {
-            if (tile === null) {
+        board.forEach((boardIndex) => {
+            if (boardIndex === null) {
                 returnValue = "in progress";
             }
         });
@@ -120,6 +134,7 @@ const gameBoard = (function() {
     }
 })();
 
+// The uiController handles user input and updates the visual elements
 const uiController = (function() {
     // Register event listeners for each cell in the UI board
     const displayBoard = document.querySelector(".board");
@@ -242,6 +257,7 @@ const uiController = (function() {
         }
     })
 
+    // Clears out both the display board and the underlying game board
     function clearBoard() {
         // Clear the underlying game board
         gameBoard.clearBoard();
@@ -256,6 +272,9 @@ const uiController = (function() {
 
     }
 
+    // Translate a marker ("X" or "O") to an image that represents
+    // that marker.
+    // Returns null if one of the two valid markers are not given.
     function markerToImageSource(marker) {
         switch (marker) {
             case "X":
@@ -268,6 +287,8 @@ const uiController = (function() {
         }
     }
 
+    // Fills the on-screen board with X or O images based on the underlying
+    // game board
     function renderBoard() {
         const displayBoard = document.querySelector(".board");
         const cells = displayBoard.children;
@@ -288,6 +309,7 @@ const uiController = (function() {
         }
     }
 
+    // Updates the element that indicates which player's turn it is
     function updateTurnIndicator(turn) {
         const turnIndicator = document.querySelector("#turn-img");
 
@@ -308,6 +330,8 @@ const uiController = (function() {
         }
     }
 
+    // Updates the element indicating the game result with a message about
+    // which player won or if it was a tie.
     function updateResult(result) {
         const resultIndicator = document.querySelector("#result");
         switch (result) {
@@ -324,6 +348,7 @@ const uiController = (function() {
         }
     }
 
+    // Updates elements holding the names and scores of both players
     function updatePlayerInfo(player1, player2) {
         const p1Name = document.querySelector("#player1 .name");
         const p1Score = document.querySelector("#player1 .score");
@@ -349,6 +374,8 @@ const uiController = (function() {
 
 })();
 
+// The gameController handles game-related logic and maintains
+// the player objects.
 const gameController = (() => {
     let player1;
     let player2;
@@ -370,11 +397,16 @@ const gameController = (() => {
         uiController.updateTurnIndicator(turn);
     }
 
+    // Reset the turn back to player 1.  This is used when
+    // resetting the board for a new game.
     function resetTurn() {
         turn = player1;
         uiController.updateTurnIndicator(turn);
     }
 
+    // Handle the logic of what happens after each turn.
+    // Checks for a win or a tie and triggers end-of-game
+    // events or swaps which player's turn it is.
     function turnOver() {
         // Update the board
         uiController.renderBoard();
@@ -414,6 +446,8 @@ const gameController = (() => {
         }
     }
 
+    // Clear out the board and reset the turn to player 1 to start a 
+    // fresh game
     function resetGame() {
         gameResult = "in progress";
         gameBoard.clearBoard();
@@ -421,10 +455,16 @@ const gameController = (() => {
         uiController.updateTurnIndicator(turn);
     }
     
+    // Getter for whose turn it is
     function getTurn() {
         return turn;
     }
 
+    // Get a reference to the player object based on the given player
+    // string.  The player string can be either
+    //      "player1" or
+    //      "player2"
+    // Anything else will return a null
     function playerStringToPlayerObj(playerString) {
         if ("player1" === playerString) {
             return player1;
@@ -437,6 +477,8 @@ const gameController = (() => {
         }
     }
 
+    // Passes the player info to the uiController to update the displayed
+    // user info (name, score).
     function refreshPlayers() {
         uiController.updatePlayerInfo(player1, player2);
     }
