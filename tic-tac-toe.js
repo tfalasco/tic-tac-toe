@@ -173,22 +173,44 @@ const uiController = (function() {
         })
     }
 
-    // Register event listeners for game-over dialog buttons
+    // Register event listeners for game-over dialog buttons and close action
     const gameOverDialog = document.querySelector("#game-over");
     const playAgainBtn = document.querySelector("#play-again");
     playAgainBtn.addEventListener("click", (event) => {
         event.preventDefault();
-        uiController.clearBoard();
-        gameController.resetTurn();
-        gameOverDialog.close("confirm");
+        gameOverDialog.close("play-again");
     });
+
     const startOverBtn = document.querySelector("#start-over");
     startOverBtn.addEventListener("click", (event) => {
         event.preventDefault();
-        gameController.initialize();
-        uiController.clearBoard();
-        gameOverDialog.close("confirm");
+        gameOverDialog.close("start-over");
     });
+
+    gameOverDialog.addEventListener("close", () => {
+        if ("start-over" === gameOverDialog.returnValue) {
+            gameController.initialize();
+            uiController.clearBoard();
+        }
+        else if ("play-again" === gameOverDialog.returnValue) {
+            uiController.clearBoard();
+            gameController.resetTurn();
+        }
+        else {
+            // In case the dialog is cleared in some other way, 
+            // add a default behavior of starting a new game
+            uiController.clearBoard();
+            gameController.resetTurn();
+        }
+    });  
+
+    gameOverDialog.addEventListener("keydown", (e) => {
+        // Start a new game if the user presses escape
+        if (e.key === "Escape") {
+            e.preventDefault();
+            gameOverDialog.close("play-again");
+        }
+    })
 
     // Register event listeners for player edit buttons
     const editButtons = document.querySelectorAll(".edit-button");
